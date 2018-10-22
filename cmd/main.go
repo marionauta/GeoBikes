@@ -2,8 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/marionauta/geobikes"
 )
@@ -14,8 +17,12 @@ var endpoint = geobikes.BikeServer{
 }
 
 func main() {
+	port := flag.IntP("port", "p", 80, "Port to use")
+	flag.Parse()
+
 	http.HandleFunc("/", stations)
-	log.Fatal(http.ListenAndServe(":80", nil))
+	addr := fmt.Sprintf(":%d", *port)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func stations(w http.ResponseWriter, r *http.Request) {
